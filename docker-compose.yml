@@ -1,0 +1,36 @@
+version: "3.8"
+services:
+  backend_flask:
+      ports:
+          - "7000:7000"
+      command: flask run --host=0.0.0.0
+      depends_on:
+          - mongodb
+          - redis
+          - celery
+  frontend_vue:
+      image: ubuntu:20.04
+      ports:
+          - "8000:8000"
+      depends_on:
+          - backend_flask
+  redis:
+      build: redis/Dockerfile  
+      ports:
+          - "6379:6379"
+  mongodb:
+      build: mongodb/Dockerfile  
+      ports:
+          - "27017:27017"
+  celery:
+      image: ubuntu:20.04
+      ports:
+          - "5432:5432"
+  api_system:
+      image: ubuntu:20.04
+      ports:
+          - "4567:4567"
+      depends_on:
+          - mongodb
+          - redis
+          - celery
